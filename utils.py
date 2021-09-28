@@ -1,6 +1,20 @@
 import itertools
 import numpy as np
 
+import tensorly as tl
+from tensorly.decomposition import parafac
+
+def parafac_decomposition(data, rank):
+    weights, factors = parafac(
+        tl.tensor(data, dtype=tl.float32),
+        rank=rank,
+        normalize_factors=False,
+        init='random',
+        tol=1e-3,
+        n_iter_max=100
+    )
+    return tl.kruskal_to_tensor((weights, factors))
+
 def reindex(tensor, partitions, index):
     new_index = [0]*len(partitions)
     for i in range(len(partitions)):
